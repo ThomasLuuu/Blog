@@ -10,23 +10,23 @@ const route = require('./routes');
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(
-    express.urlencoded({
-        extended: true,
-    }),
+  express.urlencoded({
+    extended: true,
+  }),
 ); //middleware
 
-            app.use(express.json()); //middleware
+app.use(express.json()); //middleware
 
 //Template Engine
 app.engine(
-    'hbs',
-                handlebars({
-                   extname: '.hbs',
-    }),
+  'hbs',
+  handlebars({
+            extname: '.hbs',
+  }),
 ); //Define handlebar
 
-app.set('view engine', 'hbs'); //set view engine = hbs
-app.set('views', path.join(__dirname, 'resources/views')); //allows to use views folder
+    app.set('view engine', 'hbs'); //set view engine = hbs
+            app.set('views', path.join(__dirname, 'resources/views')); //allows to use views folder
 
 //HTTP Logger
 // app.use(morgan('combined'))
@@ -35,6 +35,6 @@ app.set('views', path.join(__dirname, 'resources/views')); //allows to use views
 route(app);
 
 app.listen(port, () => {
-    // items
-    console.log(`Example app listening at http://localhost:${port}`);
+  // items
+  console.log(`Example app listening at http://localhost:${port}`);
 });
