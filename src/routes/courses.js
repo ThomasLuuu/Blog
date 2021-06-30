@@ -9,4 +9,6 @@ router.post('/store', coursescontroller.store);
 router.put('/:id', coursescontroller.update);
 router.get('/:id/edit', coursescontroller.edit);
 router.delete('/:id', coursescontroller.delete);
+router.patch('/:id/restore', coursescontroller.restore);
+router.delete('/:id/force', coursescontroller.force);
 module.exports = router;
