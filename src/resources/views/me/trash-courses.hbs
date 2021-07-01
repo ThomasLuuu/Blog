@@ -1,26 +1,48 @@
-<div class="mt4">
+<form name="container-form" method="POST" action="/courses/trash/form-handle-actions" class="mt-4">
   <div>
     <h3>My deleted courses</h3>
 <i class="fas fa-undo-alt"></i>
     <a href="/me/store/mycourses">Back to your courses</a>
   </div>
+  <div class="mt-4 d-flex align-items-center">
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" value="" id="checkbox-all">
+        <label class="form-check-label" for="checkbox-all">
+          Select all
+        </label>
+      </div>
+      <select class="form-control checkbox-select-all-options" aria-label="Default select example" name="action" required>
+        <option value=""> Choose your action </option>
+        <option value="restore">Restore</option>
+        <option value="delete">Force Delete</option>
+      </select>
+          <button class="btn btn-primary btn-sm btn-check-all-submit disabled">Do</button>
+
+      
+  </div>
             <table class="table">
                 <thead class="table-light">
                     <tr>
+                        <th></th>
                         <th scope="col">#</th>
                         <th scope="col">Course Name</th>
                         <th scope="col">Level</th>
-                        <th scope="col">Date</th>
+                        <th scope="col">Deleted Date</th>
                         <th scope="col"></th>               
                     </tr>
                 </thead>
                 <tbody>
                     {{#each courses}}
                      <tr>
+                    <th>
+                         <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="{{this._id}}" name="courseIds[]">
+                          </div>
+                    </th>
                     <th scope="row"> {{sum @index 1}} </th>
                     <td>{{this.name}}</td>
                     <td>{{this.level}}</td>
-                    <td>{{this.createdAt}}</td>               
+                    <td>{{this.deletedAt}}</td>               
                     <td>
                         <a href="" class="btn btn-primary btn-restore" data-id="{{this._id}}" >Restore</a>
                         <a href="" class="btn btn-danger" data-bs-toggle="modal" data-id="{{this._id}}" data-bs-target="#delete-course-modal" >Force Delete</a>
@@ -35,7 +57,7 @@
                 {{/each}}
                 </tbody>
             </table>
-</div>
+</form>
 
 
 {{!--confirm delete course --}}
@@ -74,6 +96,9 @@
         var restoreForm = document.forms['restore-course-form'];
         var btnDeleteCourse = document.getElementById('btn-delete-course');
         var restoreBtn = $('.btn-restore');
+        var checkAllSubmitBtn = $('.btn-check-all-submit');
+        var checkBoxAll = $('#checkbox-all');
+        var btnCourseCheck = $('input[name="courseIds[]"]');
 
         //when dialog event click
         $('#delete-course-modal').on('show.bs.modal', function(event){
@@ -97,7 +122,43 @@
           restoreForm.submit();
         })
 
+        //If select all button click, then all course buttons will be clicked
+        checkBoxAll.change(function(){
+          var isCheckedAll = $(this).prop('checked');
+          btnCourseCheck.prop('checked', isCheckedAll);
+          renderCheckAllSubmitBtn();
+        })
+
+        //Check if Do button click
         
+        checkAllSubmitBtn.on('submit', function(e){
+          var isSubmittable = !$(this).hasClass('disabled');
+          if(!isSubmittable){
+            e.preventDefault();
+          }
+
+        })
+
+        //Check if course button clicked
+
+        btnCourseCheck.change(function(){
+          var countChecked = btnCourseCheck.length === $('input[name="courseIds[]"]:checked').length;
+          checkBoxAll.prop('checked',countChecked)
+          renderCheckAllSubmitBtn();
+          
+        })
+
+
+        //Render button Do 
+        function renderCheckAllSubmitBtn(){
+          var countChecked = $('input[name="courseIds[]"]:checked').length;
+          if(countChecked > 0){
+            checkAllSubmitBtn.removeClass('disabled');
+          }else{
+            checkAllSubmitBtn.addClass('disabled');
+          }
+        }
+
 
     });
 

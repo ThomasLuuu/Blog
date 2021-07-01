@@ -53,16 +53,10 @@ class CoursesController {
       .catch(next);
   }
 
-  // restore(req, res, next){
-  //   Course.restore({ _id:req.params.id})
-  //         .then(() => res.redirect('/me/store/mycourses'))
-  //         .catch(next);
-  // }
-
   //[RESTORE] /courses/:id/restore/
   restore(req, res, next) {
     Course.restore({ _id: req.params.id })
-      .then(() => res.redirect('/me/store/mycourses'))
+      .then(() => res.redirect('/me/trash/courses'))
       .catch(next);
   }
 
@@ -71,6 +65,37 @@ class CoursesController {
     Course.deleteOne({ _id: req.params.id })
       .then(() => res.redirect('back'))
       .catch(next);
+  }
+
+  //[POST] //courses/handle-form-actions
+  handleFormActions(req, res, next) {
+    switch (req.body.action) {
+      case 'delete':
+        Course.delete({ _id: { $in: req.body.courseIds } })
+          .then(() => res.redirect('back'))
+          .catch(next);
+        break;
+      default:
+        res.json({ message: 'Action invalid' });
+    }
+  }
+
+  //[POST] //courses/trash/handle-form-actions
+  trashHandleActions(req, res, next) {
+    switch (req.body.action) {
+      case 'restore':
+        Course.restore({ _id: { $in: req.body.courseIds } })
+          .then(() => res.redirect('/me/trash/courses'))
+          .catch(next);
+        break;
+      case 'delete':
+        Course.deleteOne({ _id: { $in: req.body.courseIds } })
+          .then(() => res.redirect('back'))
+          .catch(next);
+        break;
+      default:
+        res.json({ message: 'Action invalid' });
+    }
   }
 }
 
