@@ -16,7 +16,7 @@
         <option value="restore">Restore</option>
         <option value="delete">Force Delete</option>
       </select>
-          <button class="btn btn-primary btn-sm btn-check-all-submit disabled">Do</button>
+          <button class="btn btn-primary btn-sm btn-check-all-submit" disabled>Do</button>
 
       
   </div>
@@ -25,7 +25,12 @@
                     <tr>
                         <th></th>
                         <th scope="col">#</th>
-                        <th scope="col">Course Name</th>
+                        <th scope="col">
+                          
+                          Course Name
+                          {{{sortable 'name' _sort }}}
+
+                        </th>
                         <th scope="col">Level</th>
                         <th scope="col">Deleted Date</th>
                         <th scope="col"></th>               
@@ -99,6 +104,7 @@
         var checkAllSubmitBtn = $('.btn-check-all-submit');
         var checkBoxAll = $('#checkbox-all');
         var btnCourseCheck = $('input[name="courseIds[]"]');
+        var containerForm = $('form[name="container-form"]');
 
         //when dialog event click
         $('#delete-course-modal').on('show.bs.modal', function(event){
@@ -131,8 +137,8 @@
 
         //Check if Do button click
         
-        checkAllSubmitBtn.on('submit', function(e){
-          var isSubmittable = !$(this).hasClass('disabled');
+          containerForm.on('submit', function(e){
+          var isSubmittable = !checkAllSubmitBtn.hasClass('disabled');
           if(!isSubmittable){
             e.preventDefault();
           }
@@ -153,9 +159,9 @@
         function renderCheckAllSubmitBtn(){
           var countChecked = $('input[name="courseIds[]"]:checked').length;
           if(countChecked > 0){
-            checkAllSubmitBtn.removeClass('disabled');
+            checkAllSubmitBtn.attr("disabled",false);
           }else{
-            checkAllSubmitBtn.addClass('disabled');
+            checkAllSubmitBtn.attr("disabled",true);
           }
         }
 

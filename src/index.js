@@ -7,10 +7,13 @@ const path = require('path');
 const db = require('./config/db');
 const route = require('./routes');
 const methodOverride = require('method-override');
+const sortMiddleware = require('./app/middlewares/SortMiddleware');
 
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(methodOverride('_method'));
+
+app.use(sortMiddleware);
 
 app.use(
   express.urlencoded({
@@ -31,6 +34,28 @@ app.engine(
     extname: '.hbs',
     helpers: {
       sum: (a, b) => a + b,
+      sortable: (field, sort) => {
+        const sortType = field === sort.column ? sort.type : 'default';
+
+        const icons = {
+          default: 'oi oi-elevator',
+          asc: 'oi oi-sort-ascending',
+          desc: 'oi oi-sort-descending',
+        };
+
+        const types = {
+          default: 'desc',
+          asc: 'desc',
+          desc: 'asc',
+        };
+
+        const icon = icons[sortType];
+        const type = types[sortType];
+
+        return `<a href="?_sort&column=${field}&type=${type}">
+         <span class="${icon}"></span> 
+      </a> `;
+      },
     },
   }),
 ); //Define handlebar
